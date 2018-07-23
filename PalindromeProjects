@@ -1,0 +1,40 @@
+# bioinformatics-research
+#Palindrome Detection 
+#Can be used for RNA or DNA sequences.
+#If DNA sequence is used must modify Complement Dic to show complements: A:T, T:A
+#
+#
+#
+def PalindromeDetection(file):
+    with open(file, 'r')as f:
+        print("Input a FASTA formatted .txt file for analysis")
+        n=input("Even Number of Basepairs to Detect Palindromes:" )
+        while int(n)%2!=0:
+            n=input("Try Again:")
+        fatlist = []
+        finallist = []
+        donelist=[]
+        ComplementDic={'A':'U','U':'A','C':'G','G':'C'}
+        str2=''
+        for line in f.readlines():
+            x = line.replace('-', '').replace('>', '').strip().split(',')
+            fatlist.append(x)
+        for i in range(int(len(fatlist))):
+            if i > 1:
+                finallist.append(fatlist[i])
+        for i in range(len(finallist)):
+            str1 = "".join(str(finallist[i]))
+            str2 =str2+ str1.replace('[', '').replace(']', '').replace("'", '')
+        for i in range(1, len(str2) - int(n)-1):
+            count = 0
+            temp=str2[i:i + int(n)]
+            for j in range(len(temp)//2):
+                if ComplementDic[temp[j]]==temp[(len(temp)-j)-1]:
+                    count+=1
+            if count==len(temp)//2:
+                donelist.append(temp)
+    if len(donelist)==0:
+        print('No Palindromes Found in Sequence provided')
+    else:
+        print('Palindromes Found: ', donelist)
+
