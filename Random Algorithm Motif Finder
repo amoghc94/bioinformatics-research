@@ -1,0 +1,114 @@
+# Input:  A DNA sequence, K=number of nucleotides in kmer of question, t=number of DNA sequences inputted.
+# Output: Most probable Motifs within a collection of DNA sequences using Greedy Motif Search Algorithms.
+#Last method: GreedyMotifSearchWithPseudocounts, uses Matrix Profile of psudeocount probabilities of nucleotides to output the most probable motifs. 
+
+def CountWithPseudocounts(Motifs):
+    count = {} # initializing the count dictionary
+    k = len(Motifs[0])
+    for symbol in "ACGT":
+        count[symbol] = []
+        for j in range(k):
+             count[symbol].append(1)
+    t = len(Motifs)
+    for i in range(t):
+        for j in range(k):
+            symbol = Motifs[i][j]
+            count[symbol][j] += 1
+    return count
+
+def ProfileWithPseudocounts(Motifs):
+    t = len(Motifs)
+    k = len(Motifs[0])
+    profile = {}
+    rough= CountWithPseudocounts(Motifs)
+    for symbol in "ACGT":
+        profile[symbol] = []
+        for j in range(k):
+             profile[symbol].append(0)
+    for j in range(k):
+        temp=0
+        for symbol in 'ACGT':
+            temp+=rough[symbol][j]
+        for symbol in 'ACGT':
+            profile[symbol][j]=rough[symbol][j]/temp
+    return (profile)
+
+def ProfileMostProbablePattern(Text, k, Profile):
+    max=-1
+    string=''
+    answer=''
+    count=[]
+    recur=0
+    product=1
+    for i in range(len(Text)+1-k):
+        string=Text[i:i+k]
+        recur=0
+        product=1
+        for l in string:
+            product=product*(Profile[l][recur])
+            recur+=1
+        if product>max:
+            max=product
+            answer=Text[i:i+k]
+    return answer
+
+def Consensus(Motifs):
+    k = len(Motifs[0])
+    count = Count(Motifs)
+    consensus = ""
+    for j in range(k):
+        m = 0
+        frequentSymbol = ""
+        for symbol in "ACGT":
+            if count[symbol][j] > m:
+                m = count[symbol][j]
+                frequentSymbol = symbol
+        consensus += frequentSymbol
+    return consensus
+
+def Count(Motifs):
+    count = {} # initializing the count dictionary
+    k = len(Motifs[0])
+    for symbol in "ACGT":
+        count[symbol] = []
+        for j in range(k):
+             count[symbol].append(0)
+    t = len(Motifs)
+    for i in range(t):
+        for j in range(k):
+            symbol = Motifs[i][j]
+            count[symbol][j] += 1
+    return count
+
+def Score(Motifs):
+    t=len(Motifs)
+    string= Consensus(Motifs)
+    diction= Count(Motifs)
+    count=0
+    i=0
+    for letter in string:
+        count=count+t-(diction[letter][i])
+        i+=1
+    return(count)
+
+def GreedyMotifSearchWithPseudocounts(Dna, k, t)
+    BestMotifs = []
+    for i in range(0, t):
+        BestMotifs.append(Dna[i][0:k])
+    n = len(Dna[0])
+    for i in range(n-k+1):
+        Motifs = []
+        Motifs.append(Dna[0][i:i+k])
+        for j in range(1, t):
+            P = ProfileWithPseudocounts(Motifs[0:j])
+            Motifs.append(ProfileMostProbablePattern(Dna[j], k, P))
+        if Score(Motifs) < Score(BestMotifs):
+            BestMotifs = Motifs
+    return BestMotifs
+
+import sys
+lines = sys.stdin.read().splitlines()
+k,t = lines[0].split()
+k = int(k)
+t = int(t)
+print('\n'.join(GreedyMotifSearchWithPseudocounts(lines[1:],k,t)))
