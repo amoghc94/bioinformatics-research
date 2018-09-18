@@ -1,0 +1,27 @@
+#The intent of this program is to take into consideration all the different peptide sequences possible after Mass Spectrometry analysis
+#and return all the possible weights of such sequnces in daltons within an ordered list. User will be able to input sequence of interest. 
+
+def MassSpec():
+    peptide=input('Input a peptide string to get atomic weight distributions back: ')
+    MassSpecDic={'G':57,'A':71,'S':87,'P':97, 'V':99, 'T':101,'C':103,'I':113,'L':113,'N':114,'D':115,'K':128,'Q':128,'E':129,'M':131,'H':137,'F':147,'R':156,'Y':163,'W':186}
+    AtomicWeight=[]
+    AtomicWeight
+    for i in range(0, len(peptide)):
+        temp = 0
+        negtemp=1
+        temp2 = len(peptide) - i
+        finallist=[]
+        if i>=2:
+            while negtemp<i:
+                AtomicWeight.append(peptide[i:len(peptide)]+peptide[-(len(peptide)):-(len(peptide)-negtemp)])
+                negtemp+=1
+        while temp < temp2:
+            AtomicWeight.append(peptide[i:len(peptide)-temp])
+            temp+=1
+    for items in AtomicWeight:
+        weight=0
+        for letters in items:
+            weight+=MassSpecDic[letters]
+        finallist.append(weight)
+    finallist.append(0)
+    print(sorted(finallist))
